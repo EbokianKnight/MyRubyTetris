@@ -7,7 +7,6 @@ class Game
     @piece = get_random_piece
     @board = board
     @store = []
-    @cursor_pos = [5,5]
   end
 
   def get_random_piece
@@ -27,6 +26,7 @@ class Game
     result = nil
     until result
       system("clear")
+      @cursor_pos = [5,5]
       @board.render
       @board.move_piece(@piece, @cursor_pos)
       result = get_input

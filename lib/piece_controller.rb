@@ -35,7 +35,8 @@ module PieceController
    when :ctrl_c, :escape
      exit 0
    when :up, :down
-     update_rotation(ROTATOR[key])
+     update_pos(ROTATOR[key])
+     nil
    when :return
      @cursor_pos
    when :tab
@@ -46,14 +47,14 @@ module PieceController
    else
      puts key
    end
- end
+  end
 
- def get_input
+  def get_input
    key = KEYMAP[read_char]
    handle_key(key)
- end
+  end
 
- def read_char
+  def read_char
    STDIN.echo = false
    STDIN.raw!
 
@@ -62,9 +63,20 @@ module PieceController
      input << STDIN.read_nonblock(3) rescue nil
      input << STDIN.read_nonblock(2) rescue nil
    end
- ensure
+  ensure
    STDIN.echo = true
    STDIN.cooked!
 
    return input
- end
+  end
+
+  def update_pos(diff)
+    new_pos = [@cursor_pos[0] + diff[0], @cursor_pos[1] + diff[1]]
+    @cursor_pos = new_pos if piece_in_bounds?(new_pos)
+  end
+
+  def piece_in_bounds?(new_pos)
+    piece.place_at(new_pos).all? { |pos| @board.in_bounds?(pos) }
+  end
+
+end
