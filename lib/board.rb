@@ -49,11 +49,16 @@ class Board
 
   # displays the playable board
   def render
-    @grid.each do |row|
-      puts "#" + row.map { |el| el ? el.to_s : "  " }.join + "#"
+    @grid.each_with_index do |row, idx|
+      puts format_row(row, idx)
     end
     puts "######################"
     nil
+  end
+
+  def format_row(row, idx)
+    row = "#" + row.map { |el| el ? el.to_s : "  " }.join + "#"
+    idx < 4 ? row.colorize(background: :light_white) : row
   end
 
   # helper method to target positions

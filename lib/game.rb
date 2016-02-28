@@ -11,9 +11,11 @@ class Game
   end
 
   def run
+    # thread = start_descent
     until game_over?
       take_turn
     end
+    # Thread.kill(thread)
     puts "GAME OVER"
   end
 
@@ -35,11 +37,6 @@ class Game
     @points += (pnts * pnts)
   end
 
-  # def drop
-  #   row, col = @cursor_pos
-  #   @cursor_pos = [row + 1, col]
-  # end
-
   def game_over?
     @board.grid[0..3].flatten.any?
   end
@@ -57,7 +54,7 @@ class Game
     until result
       result = get_input
       @board.move_piece(@piece, @cursor_pos)
-      notifications
+      display_screen
       break if collision? && toggle_piece_slip
     end
     result
@@ -68,7 +65,7 @@ class Game
     @stack.shift
   end
 
-  def notifications
+  def display_screen
     system("clear")
     puts "Points: #{@points}"
     puts "Stored Piece: #{@store.inspect}"
@@ -78,10 +75,11 @@ class Game
 
   # def start_descent
   #   Thread.new do
-  #     while sleep 0.5
-  #       drop
-  #       notifications
-  #       break if collision?
+  #     while sleep 0.2
+  #       STDIN.cooked!
+  #       update_pos(MOVES[:space]) if @piece
+  #       display_screen
+  #       STDIN.raw!
   #     end
   #   end
   # end
@@ -89,12 +87,10 @@ class Game
   def take_turn
     @piece = next_piece
     @cursor_pos = [2,6]
-    # thread = start_descent
     until collision?
       @let_piece_slip = true
       move
     end
-    # Thread.kill(thread)
     calculate_score
   end
 
