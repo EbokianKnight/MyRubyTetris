@@ -1,5 +1,4 @@
 require 'colorize'
-require 'byebug'
 
 class Piece
   attr_reader :shape
@@ -61,7 +60,7 @@ class Piece
   end
 
   def to_s
-    "██" #Fill[@shape]
+    "██".colorize(:grey) #Fill[@shape]
   end
 
   def current_position

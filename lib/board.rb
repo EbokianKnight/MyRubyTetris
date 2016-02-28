@@ -1,4 +1,3 @@
-require 'byebug'
 
 class Board
   attr_reader :grid
@@ -39,19 +38,21 @@ class Board
     @wide_bounds.cover?(coords.first) && @tall_bounds.cover?(coords.last)
   end
 
+  # deletes the piece form the board
+  def remove_piece(piece)
+    @grid.map! do |row|
+      row.map! do |cell|
+        cell == piece ? nil : cell
+      end
+    end
+  end
+
   # displays the playable board
   def render
     @grid.each do |row|
-      p "#" + row.map { |el| el ? el.to_s : "  " }.join + "#"
+      puts "#" + row.map { |el| el ? el.to_s : "  " }.join + "#"
     end
-    p "########################"
-    nil
-  end
-  def render
-    @grid.each_with_index do |row,idx|
-      p "#" + row.map { |el| el ? el.to_s : "  " }.join + "##{idx}"
-    end
-    p "##########################"
+    puts "######################"
     nil
   end
 
@@ -67,6 +68,8 @@ class Board
     @grid[row][col] = mark
   end
 
+  private
+
   # adds a blank row into the grid
   def add_row
     @grid.unshift Array.new(@grid.first.length)
@@ -81,15 +84,6 @@ class Board
   def place_piece(piece, position)
     piece.place_at(position).each do |coords|
       self[coords] = piece
-    end
-  end
-
-  # deletes the piece form the board
-  def remove_piece(piece)
-    @grid.map! do |row|
-      row.map! do |cell|
-        cell == piece ? nil : cell
-      end
     end
   end
 
