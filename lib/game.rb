@@ -36,12 +36,12 @@ class Game
   end
 
   def collision?
-    current_position.any? do |coords|
-       hit_bottom?(coords) || hit_other_piece?
+    cur_pos.any? do |coords|
+       hit_bottom?(coords) || hit_other_piece?(next_pos - cur_pos)
     end
   end
 
-  def current_position
+  def cur_pos
     @piece.place_at(@cursor_pos)
   end
 
@@ -62,8 +62,8 @@ class Game
     coords.first.next == @board.grid.length
   end
 
-  def hit_other_piece?
-    (next_position - current_position).each do |cell|
+  def hit_other_piece?(cells)
+    cells.each do |cell|
       return true if @board[cell].class == Piece
     end
     false
@@ -75,13 +75,18 @@ class Game
 
   def move
     result = nil
+    let_piece_slips = true
     until result
       result = get_input
       @board.move_piece(@piece, @cursor_pos)
       notifications
-      break if collision?
+      break if collision? && check_piece_slip
     end
     result
+  end
+
+  def check_piece_slip
+    @let_piece_slip = @let_piece_slip ? false : true
   end
 
   def next_piece
@@ -89,7 +94,7 @@ class Game
     @stack.shift
   end
 
-  def next_position
+  def next_pos
     row, col = @cursor_pos
     @piece.place_at([row + 1, col]).select do |coords|
       @board.in_bounds?(coords)
@@ -104,15 +109,15 @@ class Game
     p @stack
   end
 
-  def start_descent
-    Thread.new do
-      while sleep 0.5
-        drop
-        notifications
-        break if collision?
-      end
-    end
-  end
+  # def start_descent
+  #   Thread.new do
+  #     while sleep 0.5
+  #       drop
+  #       notifications
+  #       break if collision?
+  #     end
+  #   end
+  # end
 
   def take_turn
     @piece = next_piece
