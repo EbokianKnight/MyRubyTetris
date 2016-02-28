@@ -10,11 +10,6 @@ class Game
     @stack = Array.new(3) { get_random_piece }
   end
 
-  def drop
-    row, col = @cursor_pos
-    @current_position = [row + 1, col]
-  end
-
   def run
     until game_over?
       take_turn
@@ -35,6 +30,11 @@ class Game
 
   private
 
+  def calculate_score
+    pnts = @board.clear_filled_rows
+    @points += (pnts * pnts)
+  end
+
   def collision?
     current_position.any? do |coords|
        hit_bottom?(coords) || hit_other_piece?
@@ -45,13 +45,13 @@ class Game
     @piece.place_at(@cursor_pos)
   end
 
-  def game_over?
-    @board.grid[0..3].flatten.any?
+  def drop
+    row, col = @cursor_pos
+    @cursor_pos = [row + 1, col]
   end
 
-  def calculate_score
-    pnts = @board.clear_filled_rows
-    @points += (pnts * pnts)
+  def game_over?
+    @board.grid[0..3].flatten.any?
   end
 
   def get_random_piece
@@ -107,8 +107,7 @@ class Game
   def start_descent
     Thread.new do
       while sleep 0.5
-        row, col = @cursor_pos
-        @cursor_pos = [row + 1, col]
+        drop
         notifications
         break if collision?
       end
