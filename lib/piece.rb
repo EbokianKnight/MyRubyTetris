@@ -3,14 +3,14 @@ require 'colorize'
 class Piece
   attr_reader :shape
 
-  Fill = {
-    I: "██".colorize(:blue),
-    O: "██".colorize(:yellow),
-    T: "██".colorize(:purple),
-    S: "██".colorize(:green),
-    Z: "██".colorize(:red),
-    J: "██".colorize(:darkblue),
-    L: "██".colorize(:darkorange)
+  Color = {
+    I: :blue,
+    O: :cyan,
+    T: :yellow,
+    S: :red,
+    Z: :green,
+    J: :light_black,
+    L: :magenta
   }
 
   Rotations = {
@@ -29,13 +29,13 @@ class Piece
         [[0,0],[0,-1],[-1,0],[-1,1]],
         [[0,0],[1,1],[0,1],[-1,0]]
         ],
-    L: [
+    J: [
         [[0,0],[0,1],[0,-1],[-1,-1]],
         [[0,0],[1,0],[-1,0],[-1,1]],
         [[0,0],[0,-1],[1,1],[0,1]],
         [[0,0],[1,-1],[1,0],[-1,0]]
        ],
-    J: [
+    L: [
         [[0,0],[0,-1],[0,1],[-1,1]],
         [[0,0],[1,0],[-1,0],[1,1]],
         [[0,0],[1,-1],[0,-1],[0,1]],
@@ -60,7 +60,7 @@ class Piece
   end
 
   def to_s
-    "██".colorize(:grey) #Fill[@shape]
+    "██".colorize(Color[@shape])
   end
 
   def current_position
