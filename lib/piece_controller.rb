@@ -22,12 +22,12 @@ module PieceController
   MOVES = {
     left: [0, -1],
     right: [0, 1],
-    space: [-1, 0]
+    space: [1, 0]
   }
 
   ROTATOR = {
-    up: @piece.rotate! 1,
-    down: @piece.rotate! -1
+    up: 1,
+    down: -1
   }
 
   def handle_key(key)
@@ -35,12 +35,12 @@ module PieceController
    when :ctrl_c, :escape
      exit 0
    when :up, :down
-     update_pos(ROTATOR[key])
+     update_rotation(ROTATOR[key])
      nil
    when :return
      @cursor_pos
    when :tab
-     @store.swap_store!
+     swap_store!
    when :left, :right, :space
      update_pos(MOVES[key])
      nil
@@ -70,13 +70,20 @@ module PieceController
    return input
   end
 
+  def update_rotation(num)
+    @piece.rotate!(num)
+    unless piece_in_bounds?(@cursor_pos)
+      @piece.rotate!(num * -1)
+    end
+  end
+
   def update_pos(diff)
     new_pos = [@cursor_pos[0] + diff[0], @cursor_pos[1] + diff[1]]
     @cursor_pos = new_pos if piece_in_bounds?(new_pos)
   end
 
   def piece_in_bounds?(new_pos)
-    piece.place_at(new_pos).all? { |pos| @board.in_bounds?(pos) }
+    @piece.place_at(new_pos).all? { |pos| @board.in_bounds?(pos) }
   end
 
 end

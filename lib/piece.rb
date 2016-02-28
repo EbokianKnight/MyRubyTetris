@@ -1,6 +1,8 @@
 require 'colorize'
+require 'byebug'
 
 class Piece
+  attr_reader :shape
 
   Fill = {
     I: "██".colorize(:blue),
@@ -54,6 +56,10 @@ class Piece
     current_position
   end
 
+  def inspect
+    @shape
+  end
+
   def to_s
     "██" #Fill[@shape]
   end
@@ -62,9 +68,13 @@ class Piece
     @current_position = @positions.first
   end
 
-  def rotate!(num = 1)
+  def rotate!(num)
     @positions.rotate!(num)
     current_position
+  end
+
+  def rotate(num)
+    @positions.rotate.first
   end
 
   def place_at(coord)
@@ -75,30 +85,3 @@ class Piece
   end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#

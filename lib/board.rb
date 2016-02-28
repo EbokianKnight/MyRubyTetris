@@ -1,3 +1,4 @@
+require 'byebug'
 
 class Board
   attr_reader :grid
@@ -10,6 +11,8 @@ class Board
   # starts a new board
   def initialize
     @grid = Board.set_board(10, 24)
+    @tall_bounds = (0...10)
+    @wide_bounds = (0...24)
   end
 
   # clears completed rows
@@ -17,28 +20,38 @@ class Board
   def clear_filled_rows
     to_clear = []
     @grid.each_with_index { |row, idx| to_clear << idx if row.all? }
-    to_clear.each(&method(:clear_row))
-    to_clear.length.times { add_row }
+    to_clear.each do |idx|
+      clear_row(idx)
+      add_row
+    end
+    to_clear.length
   end
 
   # moves_selected piece to a new position
   def move_piece(piece, position)
+    debugger if piece.is_a? Array
     remove_piece(piece)
     place_piece(piece, position)
   end
 
   # checks for a valid position
   def in_bounds?(coords)
-    row, col = coords
-    (0...@grid.first.length).cover?(row) &&
-    (0...@grid.length).cover?(col)
+    @wide_bounds.cover?(coords.first) && @tall_bounds.cover?(coords.last)
   end
 
   # displays the playable board
   def render
-    @grid.take(20).each do |row|
-      p row.map{|el| el.nil? ? "  " : el.to_s }.join
+    @grid.each do |row|
+      p "#" + row.map { |el| el ? el.to_s : "  " }.join + "#"
     end
+    p "########################"
+    nil
+  end
+  def render
+    @grid.each_with_index do |row,idx|
+      p "#" + row.map { |el| el ? el.to_s : "  " }.join + "##{idx}"
+    end
+    p "##########################"
     nil
   end
 
@@ -53,8 +66,6 @@ class Board
     row,col = position
     @grid[row][col] = mark
   end
-
-  private
 
   # adds a blank row into the grid
   def add_row
