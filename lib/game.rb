@@ -35,20 +35,10 @@ class Game
     @points += (pnts * pnts)
   end
 
-  def collision?
-    cur_pos.any? do |coords|
-       hit_bottom?(coords) || hit_other_piece?(next_pos - cur_pos)
-    end
-  end
-
-  def cur_pos
-    @piece.place_at(@cursor_pos)
-  end
-
-  def drop
-    row, col = @cursor_pos
-    @cursor_pos = [row + 1, col]
-  end
+  # def drop
+  #   row, col = @cursor_pos
+  #   @cursor_pos = [row + 1, col]
+  # end
 
   def game_over?
     @board.grid[0..3].flatten.any?
@@ -58,47 +48,24 @@ class Game
     Piece.new [:I,:O,:T,:S,:Z,:J,:L].sample
   end
 
-  def hit_bottom?(coords)
-    coords.first.next == @board.grid.length
-  end
-
-  def hit_other_piece?(cells)
-    cells.each do |cell|
-      return true if @board[cell].class == Piece
-    end
-    false
-  end
-
   def load_stack
     @stack << get_random_piece
   end
 
   def move
     result = nil
-    let_piece_slips = true
     until result
       result = get_input
       @board.move_piece(@piece, @cursor_pos)
       notifications
-      break if collision? && check_piece_slip
+      break if collision? && toggle_piece_slip
     end
     result
-  end
-
-  def check_piece_slip
-    @let_piece_slip = @let_piece_slip ? false : true
   end
 
   def next_piece
     load_stack
     @stack.shift
-  end
-
-  def next_pos
-    row, col = @cursor_pos
-    @piece.place_at([row + 1, col]).select do |coords|
-      @board.in_bounds?(coords)
-    end
   end
 
   def notifications
@@ -124,10 +91,15 @@ class Game
     @cursor_pos = [2,6]
     # thread = start_descent
     until collision?
+      @let_piece_slip = true
       move
     end
     # Thread.kill(thread)
     calculate_score
+  end
+
+  def toggle_piece_slip
+    @let_piece_slip = @let_piece_slip ? false : true
   end
 
 end
