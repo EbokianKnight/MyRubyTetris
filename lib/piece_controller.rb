@@ -73,7 +73,15 @@ module PieceController
   def update_rotation(num)
     @piece.rotate!(num)
     unless piece_in_bounds?(@cursor_pos)
-      @piece.rotate!(num * -1)
+      row, col = @cursor_pos
+      debugger unless [row,col].all?
+      if piece_in_bounds?([row,col+1])
+        update_pos MOVES[:right]
+      elsif piece_in_bounds?([row,col-1])
+        update_pos MOVES[:left]
+      else
+        @piece.rotate!(num * -1)
+      end
     end
   end
 
