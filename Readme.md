@@ -2,7 +2,7 @@
 
 ###To Run the Game
 download the file,
-navigate to MyRubyTetris in terminal
+navigate to MyRubyTetris/lib in terminal
 type: _ruby setup.rb_
 
 **To Play the Game**
@@ -11,6 +11,6 @@ type: _ruby setup.rb_
 * up and down arrow keys rotate the piece.
 * tab switches the current piece with a held piece.
 
-<p align="center">
+<p>
   <img src="./assets/tetris_ruby_screenshot.png" width="200px"/>
 </p>
