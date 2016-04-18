@@ -11,11 +11,9 @@ class Game
   end
 
   def run
-    # thread = start_descent
     until game_over?
       take_turn
     end
-    # Thread.kill(thread)
     puts "GAME OVER"
   end
 
@@ -72,17 +70,6 @@ class Game
     @board.render
     p @stack
   end
-
-  # def start_descent
-  #   Thread.new do
-  #     while sleep 0.2
-  #       STDIN.cooked!
-  #       update_pos(MOVES[:space]) if @piece
-  #       display_screen
-  #       STDIN.raw!
-  #     end
-  #   end
-  # end
 
   def take_turn
     @piece = next_piece
